@@ -19,4 +19,4 @@ model = LinearRegression().fit(X, y)
 # Model Prediction
 predict_rental_price = model.predict(X_test[0].reshape(1,-1))[0]
 print("The Real Rental Price for Rooms count=",X_test[0][0],"and","Area in Sqft =",X_test[0][1],"is =",y_test[0])
-print("The Predicted Rental Price for Rooms count=",X_test[0][0],"and","Area in Sqft =",X_test[0][1],"is =",predict_rental_price)
+print("The Predicted Rental Price for Rooms count=",X_test[0][0],"and","Area in Sqft =",X_test[0][1],"is =",x)
