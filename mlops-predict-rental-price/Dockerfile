@@ -1,10 +1,14 @@
+# Base Image for Building ML App
 FROM python
 
-WORKDIR /usr/src/app
+# Working Directory
+WORKDIR /mlapp
 
-COPY requirements.txt ./
-RUN pip install --no-cache-dir -r requirements.txt
-
+# Copy Requriments.txt and app.py, and data/rental_1000.csv
 COPY . .
 
-CMD [ "python", "./your-daemon-or-script.py" ]
+# Libarires to installed
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Default Commands to run at start of Container
+CMD [ "python","app.py" ]
