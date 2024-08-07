@@ -28,3 +28,18 @@ List of Tools to be Installed
 
 9. Install Sckit Learn
    $ pip install scikit-learn
+
+
+###################################
+List of Docker Commands
+###################################
+
+$ docker images
+$ docker ps -a
+$ docker build -t <name-of-the-docker-image>
+$ docker images
+$ docker login
+$ docker rmi <<image-id>>
+$ docker rm $(docker ps -a)
+$ docker rmi $(docker images -a -q)
+$ docker push <<image-id>>
