@@ -43,3 +43,4 @@ $ docker rmi <<image-id>>
 $ docker rm $(docker ps -a)
 $ docker rmi $(docker images -a -q)
 $ docker push <<image-id>>
+$ docker push ssadcloud/mlapp:latest
