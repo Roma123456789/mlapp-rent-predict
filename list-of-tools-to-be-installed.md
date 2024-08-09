@@ -29,6 +29,9 @@ List of Tools to be Installed
 9. Install Sckit Learn
    $ pip install scikit-learn
 
+10. Install Joblib
+   $ pip install joblib
+
 
 ###################################
 List of Docker Commands
