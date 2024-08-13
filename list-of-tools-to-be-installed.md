@@ -32,7 +32,20 @@ List of Tools to be Installed
 10. Install Joblib
    $ pip install joblib
 
+11. AWS CLI
+    https://awscli.amazonaws.com/AWSCLIV2.msi
 
+   Note: 
+   - Using IAM , create 'mlapp' user and associate AWS S3FUllAccess Policy to user(mlapp)
+   - Create IAM credentials for same mlapp user (AccessKeyID,SecretAccessKeyID)
+
+    $ aws --version   # Verify AWS CLI Installation
+    $ aws configure   # Configure AWS CLI to Allow programatic access to AWS account
+       - AccessKeyID
+       - SecretAccessKeyID
+       - region: us-east-2
+       - output: json
+   
 ###################################
 List of Docker Commands
 ###################################
@@ -47,3 +60,21 @@ $ docker rm $(docker ps -a)
 $ docker rmi $(docker images -a -q)
 $ docker push <<image-id>>
 $ docker push ssadcloud/mlapp:latest
+
+###################################
+Using Jenkins
+###################################
+Name of the S3 Bucket: mlapp-models-storage-artifacts
+URI of the S3 Bucket:  s3://mlapp-models-storage-artifacts
+AWS S3 CLI Command for File Upload:
+      $ aws s3 cp <<artifact-object-name>> <<Name of the S3 Bucket/Name of the object>>
+
+Job1: 01_mlapp_build_docker_image
+      This Jenkins job is designated to pull the ML mode from GitHub , and build Source Code and generate (.joblib) and upload to AWS S3 buckets, and build Docker Images for MLApp
+         $ cd mlops-predict-rental-price\
+         $ aws s3 cp rental_price_model.joblib s3://mlapp-models-storage-artifacts/mlapp.joblib
+         $ docker build . -t ssadcloud/mlapp
+
+Job2: 02_mlapp_push_docker_image_registry
+      This job to push image built from 01_mlapp_build_docker_image into Container Registry
+
