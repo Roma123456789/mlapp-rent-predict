@@ -36,8 +36,9 @@ List of Tools to be Installed
     https://awscli.amazonaws.com/AWSCLIV2.msi
 
    Note: 
-   - Using IAM , create 'mlapp' user and associate AWS S3FUllAccess Policy to user(mlapp)
+   - Using IAM , create 'mlapp' user and associate AWS S3FullAccess Policy to user(mlapp)
    - Create IAM credentials for same mlapp user (AccessKeyID,SecretAccessKeyID)
+   - Permissions/Policy: AmazonEC2ContainerRegistryFullAccess,AmazonS3FullAccess
 
     $ aws --version   # Verify AWS CLI Installation
     $ aws configure   # Configure AWS CLI to Allow programatic access to AWS account
@@ -77,4 +78,9 @@ Job1: 01_mlapp_build_docker_image
 
 Job2: 02_mlapp_push_docker_image_registry
       This job to push image built from 01_mlapp_build_docker_image into Container Registry
+
+        $ aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 932589472370.dkr.ecr.us-east-2.amazonaws.com
+        $ docker build -t mlapp-ecr .
+        $ docker tag mlapp-ecr:latest 932589472370.dkr.ecr.us-east-2.amazonaws.com/mlapp-ecr:latest
+        $ docker push 932589472370.dkr.ecr.us-east-2.amazonaws.com/mlapp-ecr:latest
 
