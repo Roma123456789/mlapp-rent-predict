@@ -95,6 +95,7 @@ Job1: 01_mlapp_build_docker_image
          $ cd mlops-predict-rental-price\
          $ aws s3 cp rental_price_model.joblib s3://mlapp-models-storage-artifacts/mlapp.joblib
          $ docker build . -t ssadcloud/mlapp
+         $ docker push ssadcloud/mlapp
 
 Job2: 02_mlapp_push_docker_image_registry
       This job to push image built from 01_mlapp_build_docker_image into Container Registry
