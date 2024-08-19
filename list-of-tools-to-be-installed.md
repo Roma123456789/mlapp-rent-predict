@@ -46,6 +46,26 @@ List of Tools to be Installed
        - SecretAccessKeyID
        - region: us-east-2
        - output: json
+
+13. Install Kubernetes 
+    https://kind.sigs.k8s.io/
+    https://kind.sigs.k8s.io/docs/user/quick-start#installation
+
+    $ curl.exe -Lo kind-windows-amd64.exe https://kind.sigs.k8s.io/dl/v0.24.0/kind-windows-amd64
+    $ Move-Item .\kind-windows-amd64.exe c:\some-dir-in-your-PATH\kind.exe
+
+    Note: SET PATH =$PATH: C:\kind\kind.exe
+
+    To Create Kubernetes Cluster 
+    $ kind create cluster --name main-k8s-kind-cluster
+
+
+14. Install Kubectl (CLI method and Clinet to connect with Kubernetes)
+    URL: https://kubernetes.io/docs/tasks/tools/install-kubectl-windows/
+     $ curl.exe -LO "https://dl.k8s.io/release/v1.31.0/bin/windows/amd64/kubectl.exe"
+
+    - Note: SET PATH =$PATH: C:\kubectl\kubectl.exe
+
    
 ###################################
 List of Docker Commands
@@ -84,3 +104,11 @@ Job2: 02_mlapp_push_docker_image_registry
         $ docker tag mlapp-ecr:latest 932589472370.dkr.ecr.us-east-2.amazonaws.com/mlapp-ecr:latest
         $ docker push 932589472370.dkr.ecr.us-east-2.amazonaws.com/mlapp-ecr:latest
 
+
+###################################
+# Kuberenetes Commands
+###################################
+ - kubectl get nodes
+ - kubectl get pods
+ - kubectl apply -f mlapp-deployment.yaml
+ - kubectl delete mlapp-deployment
