@@ -3,6 +3,8 @@ kind: Deployment
 
 metadata:
   name: mlapp-deployment
+  labels:
+    app: mlapp-pods
 
 spec:
   replicas: 2
