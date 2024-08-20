@@ -5,7 +5,7 @@ metadata:
   name: rental-price-predictor-service
 spec:
   selector:
-    app: rental-price-predictor
+    app: mlapp-pods
   ports:
   - protocol: TCP
     port: 5000
