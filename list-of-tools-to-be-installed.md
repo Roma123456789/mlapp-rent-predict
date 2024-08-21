@@ -112,4 +112,6 @@ Job2: 02_mlapp_push_docker_image_registry
  - kubectl get nodes
  - kubectl get pods
  - kubectl apply -f mlapp-deployment.yaml
- - kubectl delete mlapp-deployment
+ - kubectl apply -f mlapp-service.yaml
+ - kubectl delete -f mlapp-deployment
+ - kubectl port-forward svc/rental-price-predictor-service 5000:5000
