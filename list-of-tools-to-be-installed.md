@@ -106,6 +106,17 @@ Job2: 02_mlapp_push_docker_image_registry
         $ docker push 932589472370.dkr.ecr.us-east-2.amazonaws.com/mlapp-ecr:latest
 
 
+Job3: 03_mlapp_deploy_to_k8s
+         #Task1
+         $ cd mlops-predict-rental-price/k8s-config-files
+         $ kubectl delete -f mlapp-service.yaml
+         $ kubectl delete -f mlapp-deployment.yaml
+
+         # Task2
+         $ cd mlops-predict-rental-price/k8s-config-files
+         $ kubectl apply -f mlapp-deployment.yaml
+         $ kubectl apply -f mlapp-service.yaml
+
 ###################################
 # Kuberenetes Commands
 ###################################
