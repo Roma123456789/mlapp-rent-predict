@@ -16,4 +16,4 @@ EXPOSE 5000
 # Default Commands to run at start of Container
 CMD ["python","app.py" ]
 
-# Dockerfile was written by Siddarth
+# Dockerfile was written by Igor
