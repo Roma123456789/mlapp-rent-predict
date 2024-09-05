@@ -127,3 +127,8 @@ Job3: 03_mlapp_deploy_to_k8s
  - kubectl delete -f mlapp-deployment
  - kubectl port-forward svc/rental-price-predictor-service 5000:5000
  -  kubectl port-forward -n kubeflow svc/ml-pipeline-ui 8080:80
+ - https://artifacthub.io/packages/helm/prometheus-community/kube-prometheus-stack (prometheus stack)
+ - kubectl port-forward svc/myprometheus-grafana 3000:80 >>> grafana
+ - kubectl port-forward svc/myprometheus-kube-promethe-prometheus 9090:9090
+ - kubectl get secret
+ - kubectl get secret myprometheus-grafana -o jsonpath="{.data.admin-password}" --namespace default | base64 --decode     >>>> admin and prom-operator
