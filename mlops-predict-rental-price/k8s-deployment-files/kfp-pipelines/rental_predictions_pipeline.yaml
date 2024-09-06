@@ -1,0 +1,124 @@
+# PIPELINE DEFINITION
+# Name: rental-prediction-pipeline
+# Inputs:
+#    rs: int
+#    sq: int
+# Outputs:
+#    Output: float
+components:
+  comp-modeldevelopment:
+    executorLabel: exec-modeldevelopment
+    inputDefinitions:
+      parameters:
+        rooms:
+          parameterType: NUMBER_INTEGER
+        sqft:
+          parameterType: NUMBER_INTEGER
+    outputDefinitions:
+      parameters:
+        Output:
+          parameterType: NUMBER_DOUBLE
+deploymentSpec:
+  executors:
+    exec-modeldevelopment:
+      container:
+        args:
+        - --executor_input
+        - '{{$}}'
+        - --function_to_execute
+        - modeldevelopment
+        command:
+        - sh
+        - -c
+        - "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip ||\
+          \ python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1\
+          \ python3 -m pip install --quiet --no-warn-script-location 'kfp==2.8.0'\
+          \ '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"3.9\"'  &&\
+          \  python3 -m pip install --quiet --no-warn-script-location 'numpy' 'pandas'\
+          \ 'joblib' 'scikit-learn' 'flask' && \"$0\" \"$@\"\n"
+        - sh
+        - -ec
+        - 'program_path=$(mktemp -d)
+
+
+          printf "%s" "$0" > "$program_path/ephemeral_component.py"
+
+          _KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         "$program_path/ephemeral_component.py"                         "$@"
+
+          '
+        - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
+          \ *\n\ndef modeldevelopment(rooms: int, sqft:int) -> float:\n        # Importing\
+          \ Libraries\n        import pandas as pd\n        import numpy as np\n \
+          \       import joblib\n        from flask import Flask, render_template,\
+          \ request\n        from sklearn.linear_model import LinearRegression\n \
+          \       from sklearn.model_selection import train_test_split\n        from\
+          \ sklearn.metrics import mean_squared_error\n\n        # Load and process\
+          \ the data\n        # rentalDF = pd.read_csv('data/rental_1000.csv')\n \
+          \       rentalDF = pd.read_csv('https://raw.githubusercontent.com/Roma123456789/mlapp-rent-predict/main/mlops-predict-rental-price/data/rental_1000.csv')\n\
+          \n        # Data Transformation (Feature Engineering - Use Features for\
+          \ Model Development)\n        X = rentalDF[['rooms', 'sqft']].values   #\
+          \ Features \n        y = rentalDF['price'].values             # Label\n\n\
+          \        # Split Data into Training and Testing \n        X_train, X_test,\
+          \ y_train, y_test = train_test_split(X, y, test_size=0.20)\n\n        #\
+          \ Model Training\n        model = LinearRegression().fit(X_train, y_train)\n\
+          \n        # Example prediction for a specific test sample\n        #sample_index\
+          \ = 0  # Change this index to test different samples\n        #predict_rental_price\
+          \ = model.predict([X_test[sample_index]])[0]\n        #print(f\"The Real\
+          \ Rental Price for Rooms count={X_test[sample_index][0]} and Area in Sqft={X_test[sample_index][1]}\
+          \ is={y_test[sample_index]}\")\n        #print(f\"The Predicted Rental Price\
+          \ for Rooms count={X_test[sample_index][0]} and Area in Sqft={X_test[sample_index][1]}\
+          \ is={predict_rental_price}\")\n\n        # For User inputs,Prediction\n\
+          \        predict_rental_price = model.predict(np.array([[rooms, sqft]]))[0]\n\
+          \        print(f\"The Predicted Rental Price is={predict_rental_price}\"\
+          )\n\n        return (predict_rental_price)\n        # Save the Model\n \
+          \       #joblib.dump(model, 'model/rental_price_model.joblib')\n\n     \
+          \   # Load the Model\n        #model = joblib.load('model/rental_price_model.joblib')\n\
+          \n        # Initialize Flask application\n        #app = Flask(__name__)\n\
+          \n        #@app.route('/')\n        #def home():\n            #return render_template('index.html')\n\
+          \n        #@app.route('/predict', methods=['POST'])\n        #def predict():\n\
+          \            #rooms = int(request.form['rooms'])\n            #sqft = int(request.form['sqft'])\n\
+          \n            # Make the prediction\n            #prediction = model.predict(np.array([[rooms,\
+          \ sqft]]))\n\n            #return render_template('result.html', prediction=prediction[0])\n\
+          \n        if __name__ == \"__main__\":\n            app.run(debug=True,\
+          \ host=\"0.0.0.0\")\n\n        # Compute RMSE (optional)\n        # y_pred\
+          \ = model.predict(X_test)\n        # rmse = np.sqrt(mean_squared_error(y_test,\
+          \ y_pred))\n        # print(f\"RMSE: {rmse}\")\n\n        # Compute RMSE\n\
+          \        # rmse = np.sqrt(mean_squared_error(y_test, y_pred))\n        #\
+          \ print(f\"RMSE: {rmse}\")\n\n"
+        image: python:3.8
+pipelineInfo:
+  name: rental-prediction-pipeline
+root:
+  dag:
+    outputs:
+      parameters:
+        Output:
+          valueFromParameter:
+            outputParameterKey: Output
+            producerSubtask: modeldevelopment
+    tasks:
+      modeldevelopment:
+        cachingOptions:
+          enableCache: true
+        componentRef:
+          name: comp-modeldevelopment
+        inputs:
+          parameters:
+            rooms:
+              componentInputParameter: rs
+            sqft:
+              componentInputParameter: sq
+        taskInfo:
+          name: modeldevelopment
+  inputDefinitions:
+    parameters:
+      rs:
+        parameterType: NUMBER_INTEGER
+      sq:
+        parameterType: NUMBER_INTEGER
+  outputDefinitions:
+    parameters:
+      Output:
+        parameterType: NUMBER_DOUBLE
+schemaVersion: 2.1.0
+sdkVersion: kfp-2.8.0
